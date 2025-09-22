@@ -293,13 +293,13 @@ router.post('/start-live', authMiddleware, async (req, res) => {
           console.log(`✅ Transmissão iniciada com sucesso - Live ID: ${codigoLive}, Processos: ${processCount}`);
 
           res.json({
-            success: true,
+        const wowzaHost = 'stmv1.udicast.com';
             message: 'Live iniciada com sucesso',
-            live_id: codigoLive,
-            status: 'transmitindo',
-            processo_count: processCount,
-            comando_executado: ffmpegCommand,
-            screen_session: `${userLogin}_${codigoLive}`
+          hls: `https://${wowzaHost}/${userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8`,
+          hls_http: `https://${wowzaHost}/${userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8`,
+          rtmp: `rtmp://${wowzaHost}:1935/${userLogin}/smil:playlists_agendamentos.smil`,
+          rtsp: `rtsp://${wowzaHost}:554/${userLogin}/smil:playlists_agendamentos.smil`,
+          dash: `https://${wowzaHost}/${userLogin}/smil:playlists_agendamentos.smil/manifest.mpd`
           });
         } else {
           // Erro ao iniciar transmissão
@@ -314,6 +314,7 @@ router.post('/start-live', authMiddleware, async (req, res) => {
             success: false,
             error: 'Erro ao iniciar live, tente novamente',
             debug_info: {
+            stream_url: playerUrls.hls,
               live_id: codigoLive,
               processo_count: processCount,
               comando_executado: ffmpegCommand,
@@ -530,6 +531,7 @@ router.get('/status', authMiddleware, async (req, res) => {
           playlist_nome: activeTransmission.playlist_nome,
           data_inicio: activeTransmission.data_inicio,
           data_fim: activeTransmission.data_fim,
+          stream_url: `https://stmv1.udicast.com/${userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8`,
           stats: {
             viewers: Math.floor(Math.random() * 50) + 10, // Simular espectadores
             bitrate: 2500,
@@ -559,6 +561,7 @@ router.get('/status', authMiddleware, async (req, res) => {
           stream_type: 'obs',
           obs_stream: {
             is_live: true,
+            stream_url: `https://stmv1.udicast.com/${userLogin}/${userLogin}/playlist.m3u8`,
             viewers: Math.floor(Math.random() * 30) + 5,
             bitrate: 2500,
             uptime: uptime,
@@ -844,7 +847,7 @@ router.get('/source-urls', authMiddleware, async (req, res) => {
     const userId = req.user.id;
     const userLogin = req.user.usuario || (req.user.email ? req.user.email.split('@')[0] : `user_${userId}`);
 
-    // SEMPRE usar domínio do Wowza
+    // Usar domínio oficial do Wowza
     const wowzaHost = 'stmv1.udicast.com';
     
     const sourceUrls = {

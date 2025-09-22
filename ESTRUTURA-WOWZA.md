@@ -67,17 +67,17 @@
 ## 🔗 URLs de Streaming
 
 ### URLs de Streaming
+### URLs de Streaming (Padrão de Referência)
 - **RTMP:** rtmp://stmv1.udicast.com:1935/{usuario}
-- **HLS OBS:** http://stmv1.udicast.com:1935/{usuario}/{usuario}_live/playlist.m3u8
-- **HLS HTTP OBS:** http://stmv1.udicast.com/{usuario}/{usuario}_live/playlist.m3u8
-- **HLS SMIL (Playlists):** http://stmv1.udicast.com:1935/{usuario}/smil:playlists_agendamentos.smil/playlist.m3u8
-- **HLS HTTP SMIL:** http://stmv1.udicast.com/{usuario}/smil:playlists_agendamentos.smil/playlist.m3u8
-- **DASH OBS:** http://stmv1.udicast.com:1935/{usuario}/{usuario}_live/manifest.mpd
-- **DASH SMIL:** http://stmv1.udicast.com:1935/{usuario}/smil:playlists_agendamentos.smil/manifest.mpd
-- **RTSP OBS:** rtsp://stmv1.udicast.com:554/{usuario}/{usuario}_live
+- **HLS OBS:** https://stmv1.udicast.com/{usuario}/{usuario}/playlist.m3u8
+- **HLS SMIL (Playlists):** https://stmv1.udicast.com/{usuario}/smil:playlists_agendamentos.smil/playlist.m3u8
+- **DASH OBS:** https://stmv1.udicast.com/{usuario}/{usuario}/manifest.mpd
+- **DASH SMIL:** https://stmv1.udicast.com/{usuario}/smil:playlists_agendamentos.smil/manifest.mpd
+- **RTSP OBS:** rtsp://stmv1.udicast.com:554/{usuario}/{usuario}
 - **RTSP SMIL:** rtsp://stmv1.udicast.com:554/{usuario}/smil:playlists_agendamentos.smil
 - **RTMP SMIL:** rtmp://stmv1.udicast.com:1935/{usuario}/smil:playlists_agendamentos.smil
-- **Vídeos VOD:** http://stmv1.udicast.com:80/vod/_definst_/mp4:{usuario}/{pasta}/{arquivo}/playlist.m3u8
+- **Vídeos VOD:** https://stmv1.udicast.com/{usuario}/{usuario}/mp4:{pasta}/{arquivo}/playlist.m3u8
+- **Aplicação Wowza:** {usuario} (aplicação específica por usuário)
 - **Aplicação Wowza:** {usuario} (aplicação específica por usuário)
 
 ### Para Transmissão ao Vivo (OBS)

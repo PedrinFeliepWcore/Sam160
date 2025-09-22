@@ -212,7 +212,7 @@ const Dashboard: React.FC = () => {
             const baseUrl = process.env.NODE_ENV === 'production' 
               ? 'http://samhost.wcore.com.br:3001'
               : 'http://localhost:3001';
-            setCurrentVideoUrl(`${baseUrl}/api/player-port/iframe?login=${userLogin}&stream=${userLogin}_live&player=1&contador=true`);
+            setCurrentVideoUrl(`${baseUrl}/api/player-port/iframe?login=${userLogin}&player=1&contador=true`);
             setPlaylistName(`📡 OBS: ${data.obs_stream.streamName || `${userLogin}_live`}`);
           } else if (data.transmission) {
             // Para playlist, usar URL do player na porta do sistema

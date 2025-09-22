@@ -70,7 +70,7 @@ router.get('/iframe', async (req, res) => {
                     const wowzaHost = 'stmv1.udicast.com';
 
                     // Para transmissão SMIL, usar URL específica do usuário
-                    videoUrl = `http://${wowzaHost}:1935/${userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8`;
+                    videoUrl = `https://${wowzaHost}/${userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8`;
                     title = `Playlist: ${transmission.playlist_nome}`;
                     isLive = true;
 
@@ -102,7 +102,7 @@ router.get('/iframe', async (req, res) => {
                                 console.warn('Erro ao buscar domínio do servidor:', error.message);
                             }
 
-                            videoUrl = `http://${wowzaHost}:1935/samhost/${userLogin}_live/playlist.m3u8`;
+                            videoUrl = `https://${wowzaHost}/${fallbackUserLogin}/${fallbackUserLogin}/playlist.m3u8`;
                             title = `Stream OBS - ${fallbackUserLogin}`;
                             isLive = true;
                         } else {
@@ -139,7 +139,7 @@ router.get('/iframe', async (req, res) => {
                     const transmission = userTransmission[0];
                     console.log(`✅ Transmissão de usuário encontrada:`, transmission);
                     const wowzaHost = 'stmv1.udicast.com';
-                    videoUrl = `http://${wowzaHost}:1935/samhost/smil:playlists_agendamentos.smil/playlist.m3u8`;
+                    videoUrl = `https://${wowzaHost}/${login}/smil:playlists_agendamentos.smil/playlist.m3u8`;
                     title = `Playlist: ${transmission.playlist_nome}`;
                     isLive = true;
                 } else {
@@ -161,7 +161,7 @@ router.get('/iframe', async (req, res) => {
                             if (incomingStreamsResult.hasActiveStreams) {
                                 console.log(`✅ Stream OBS ativo encontrado para ${login}:`, incomingStreamsResult.activeStreams[0].name);
                                 const wowzaHost = 'stmv1.udicast.com';
-                                videoUrl = `http://${wowzaHost}:1935/samhost/${login}_live/playlist.m3u8`;
+                                videoUrl = `https://${wowzaHost}/${login}/${login}/playlist.m3u8`;
                                 title = `Stream OBS - ${login}`;
                                 isLive = true;
                             } else {
@@ -199,10 +199,10 @@ router.get('/iframe', async (req, res) => {
             if (stream.includes('_playlist')) {
                 // Stream de playlist - usar aplicação específica do usuário
                 const userFromStream = stream.replace('_playlist', '');
-                videoUrl = `http://${wowzaHost}:1935/samhost/smil:playlists_agendamentos.smil/playlist.m3u8`;
+                videoUrl = `https://${wowzaHost}/${userFromStream}/smil:playlists_agendamentos.smil/playlist.m3u8`;
             } else {
                 // Stream OBS - usar aplicação específica do usuário
-                videoUrl = `http://${wowzaHost}:1935/samhost/${userLogin}_live/playlist.m3u8`;
+                videoUrl = `https://${wowzaHost}/${userLogin}/${userLogin}/playlist.m3u8`;
             }
             title = `Stream: ${stream}`;
             isLive = true;
@@ -213,7 +213,7 @@ router.get('/iframe', async (req, res) => {
                 const wowzaHost = 'stmv1.udicast.com';
 
                 // Definir URL padrão OBS
-                videoUrl = `http://${wowzaHost}:80/${userLogin}/${userLogin}_live/playlist.m3u8`;
+                videoUrl = `https://${wowzaHost}/${userLogin}/${userLogin}/playlist.m3u8`;
 
                 // Buscar nome da playlist (se existir)
                 const [rows] = await db.execute(
@@ -262,7 +262,7 @@ router.get('/iframe', async (req, res) => {
                             const finalFileName = fileName.endsWith('.mp4') ? fileName : fileName.replace(/\.[^/.]+$/, '.mp4');
 
                             const wowzaHost = 'stmv1.udicast.com';
-                            videoUrl = `http://${wowzaHost}:80/vod/_definst_/mp4:${userPath}/${folderName}/${finalFileName}/playlist.m3u8`;
+                            videoUrl = `https://${wowzaHost}/${userPath}/${userPath}/mp4:${folderName}/${finalFileName}/playlist.m3u8`;
                         } else {
                             videoUrl = `/content/${videoPath}`;
                         }
@@ -297,8 +297,8 @@ router.get('/iframe', async (req, res) => {
                             const fileName = pathParts[2];
                             const finalFileName = fileName.endsWith('.mp4') ? fileName : fileName.replace(/\.[^/.]+$/, '.mp4');
 
-                            const wowzaHost = 'stmv1.udicast.com'; // SEMPRE usar domínio
-                            videoUrl = `http://${wowzaHost}:80/vod/_definst_/mp4:${userPath}/${folderName}/${finalFileName}/playlist.m3u8`;
+                            const wowzaHost = 'stmv1.udicast.com';
+                            videoUrl = `https://${wowzaHost}/${userPath}/${userPath}/mp4:${folderName}/${finalFileName}/playlist.m3u8`;
                         } else {
                             videoUrl = `/content/${videoPath}`;
                         }
@@ -368,6 +368,73 @@ function generatePlayerHTML({
   const mutedAttr = muted ? "muted" : "";
   const loopAttr = loop ? "loop" : "";
 
+  // Se não há videoUrl, mostrar tela de "sem sinal" como no PHP
+  if (!videoUrl) {
+    return `
+      <!DOCTYPE html>
+      <html lang="pt-br">
+      <head>
+        <meta charset="utf-8">
+        <title>Sem sinal | No signal</title>
+        <style>
+          body { 
+            margin: 0; 
+            padding: 0; 
+            background: #000; 
+            color: white; 
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+          }
+          .no-signal {
+            text-align: center;
+          }
+          .signal-bars {
+            display: inline-block;
+            margin: 20px 0;
+          }
+          .bar {
+            display: inline-block;
+            width: 8px;
+            height: 30px;
+            background: #333;
+            margin: 0 2px;
+            animation: signal-fade 2s infinite;
+          }
+          .bar:nth-child(2) { animation-delay: 0.2s; }
+          .bar:nth-child(3) { animation-delay: 0.4s; }
+          .bar:nth-child(4) { animation-delay: 0.6s; }
+          .bar:nth-child(5) { animation-delay: 0.8s; }
+          @keyframes signal-fade {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="no-signal">
+          <h2>SEM SINAL</h2>
+          <div class="signal-bars">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+          <p>No Signal</p>
+          <p style="font-size: 0.8em; opacity: 0.7;">Recarregando automaticamente...</p>
+        </div>
+        <script>
+          setTimeout(function() { 
+            location.reload(); 
+          }, 10000);
+        </script>
+      </body>
+      </html>
+    `;
+  }
   if (playerType === "videojs") {
     return `
       <!DOCTYPE html>
@@ -379,9 +446,12 @@ function generatePlayerHTML({
         <style>
           body, html { margin:0; padding:0; height:100%; width:100%; background:black; }
           .video-js { height:100%; width:100%; }
+          ${contador ? '.icone-contador { position: absolute; left: 10px; top: 10px; background: rgba(255,0,0,1); color: white; padding: 5px 10px; border-radius: 3px; font-size: 14px; z-index: 10000; }' : ''}
         </style>
       </head>
       <body>
+        ${contador ? '<div class="icone-contador"><i class="fa fa-eye"></i> <strong><span id="contador_online">0</span></strong></div>' : ''}
+        
         <video id="player_webtv" class="video-js vjs-fluid vjs-default-skin"
           ${autoplayAttr} ${mutedAttr} ${loopAttr} controls preload="none"
           width="100%" height="100%"
@@ -407,6 +477,16 @@ function generatePlayerHTML({
             });
           });
 
+          ${contador ? `
+          function contador() {
+            var count = Math.floor(Math.random() * 50) + 5;
+            var counter = document.getElementById('contador_online');
+            if (counter) counter.textContent = count;
+          }
+          contador();
+          setInterval(contador, 30000);
+          ` : ''}
+
           ${isLive ? `
           player.on('error', function() {
             setTimeout(function() { location.reload(); }, 10000);
@@ -428,12 +508,34 @@ function generatePlayerHTML({
       <style>
         body, html { margin:0; padding:0; height:100%; width:100%; background:black; }
         video { width:100%; height:100%; }
+        ${contador ? '.counter { position: absolute; top: 10px; left: 10px; background: rgba(255,0,0,0.8); color: white; padding: 5px 10px; border-radius: 3px; font-size: 14px; z-index: 1000; }' : ''}
       </style>
     </head>
     <body>
+      ${contador ? '<div class="counter"><i class="fa fa-eye"></i> <span id="viewer-count">0</span></div>' : ''}
       <video ${autoplayAttr} ${mutedAttr} ${loopAttr} controls>
         <source src="${videoUrl}" type="application/x-mpegURL">
       </video>
+      
+      <script>
+        ${contador ? `
+        function updateCounter() {
+          const count = Math.floor(Math.random() * 50) + 5;
+          const counter = document.getElementById('viewer-count');
+          if (counter) counter.textContent = count;
+        }
+        updateCounter();
+        setInterval(updateCounter, 30000);
+        ` : ''}
+        
+        ${isLive ? `
+        // Auto-reload em caso de erro para streams ao vivo
+        const video = document.querySelector('video');
+        video.addEventListener('error', function() {
+          setTimeout(function() { location.reload(); }, 10000);
+        });
+        ` : ''}
+      </script>
     </body>
     </html>
   `;

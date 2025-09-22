@@ -143,6 +143,10 @@ const DadosConexao: React.FC = () => {
           <div>
             <h3 className="text-green-900 font-medium mb-2">💡 Como usar os dados de conexão</h3>
             <ul className="text-green-800 text-sm space-y-1">
+              <li>• <strong>Servidor Wowza:</strong> stmv1.udicast.com (domínio oficial)</li>
+              <li>• <strong>RTMP para OBS:</strong> rtmp://stmv1.udicast.com:1935/{userLogin}</li>
+              <li>• <strong>Stream Key:</strong> {userLogin}_live</li>
+              <li>• <strong>URL HLS:</strong> https://stmv1.udicast.com/{userLogin}/{userLogin}/playlist.m3u8</li>
               <li>• <strong>Dados FTP:</strong> Use para conectar softwares como FileZilla ou WinSCP</li>
               <li>• <strong>Upload de vídeos:</strong> Envie seus arquivos diretamente para o servidor</li>
               <li>• <strong>Organização:</strong> Crie pastas para organizar seu conteúdo</li>

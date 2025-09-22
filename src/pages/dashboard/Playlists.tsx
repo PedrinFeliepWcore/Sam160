@@ -752,7 +752,7 @@ const Playlists: React.FC = () => {
 
           <div className="mt-4 p-3 bg-green-100 rounded-md">
             <p className="text-green-800 text-sm">
-              <strong>📺 URL de Transmissão:</strong> https://stmv1.udicast.com:1935/{userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8
+              <strong>📺 URL de Transmissão:</strong> https://stmv1.udicast.com/{userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8
             </p>
           </div>
         </div>

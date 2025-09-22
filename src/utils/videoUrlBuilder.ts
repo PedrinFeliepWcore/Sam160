@@ -144,17 +144,17 @@ export class VideoUrlBuilder {
     const finalFileName = this.ensureMp4Extension(parts.fileName);
 
     return {
-      // HLS usando porta 80 (HTTP) conforme VHost.xml
-      hls: `http://${domain}:${this.HLS_PORT}/vod/_definst_/mp4:${parts.userLogin}/${parts.folderName}/${finalFileName}/playlist.m3u8`,
+      // HLS seguindo padrão de referência
+      hls: `https://${domain}/${parts.userLogin}/${parts.userLogin}/mp4:${parts.folderName}/${finalFileName}/playlist.m3u8`,
       
-      // HLS seguro usando porta 443 (HTTPS) conforme VHost.xml
-      hls_secure: `https://${domain}:${this.HLS_SECURE_PORT}/vod/_definst_/mp4:${parts.userLogin}/${parts.folderName}/${finalFileName}/playlist.m3u8`,
+      // HLS seguro
+      hls_secure: `https://${domain}/${parts.userLogin}/${parts.userLogin}/mp4:${parts.folderName}/${finalFileName}/playlist.m3u8`,
       
-      // DASH usando porta 80 conforme VHost.xml
-      dash: `http://${domain}:${this.HLS_PORT}/vod/_definst_/mp4:${parts.userLogin}/${parts.folderName}/${finalFileName}/manifest.mpd`,
+      // DASH
+      dash: `https://${domain}/${parts.userLogin}/${parts.userLogin}/mp4:${parts.folderName}/${finalFileName}/manifest.mpd`,
       
-      // RTSP usando porta 554 conforme VHost.xml
-      rtsp: `rtsp://${domain}:${this.RTSP_PORT}/vod/_definst_/mp4:${parts.userLogin}/${parts.folderName}/${finalFileName}`,
+      // RTSP
+      rtsp: `rtsp://${domain}:554/${parts.userLogin}/${parts.userLogin}/mp4:${parts.folderName}/${finalFileName}`,
       
       // URL direta do player (porta 1443)
       direct: `https://${domain}:${this.PORT}/play.php?login=${parts.userLogin}&video=${parts.folderName}/${finalFileName}`
